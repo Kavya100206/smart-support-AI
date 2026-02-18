@@ -32,7 +32,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://support_user:support_pass@db:5432/support_db
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
       - DEBUG=True
     depends_on:
       db:

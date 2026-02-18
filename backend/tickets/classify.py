@@ -1,6 +1,6 @@
 import os
 import json
-import google.generativeai as genai
+from groq import Groq
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -38,7 +38,7 @@ class ClassifyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        api_key = os.environ.get("GEMINI_API_KEY", "")
+        api_key = os.environ.get("GROQ_API_KEY", "")
         if not api_key:
             return Response(
                 {"suggested_category": None, "suggested_priority": None},
@@ -46,17 +46,22 @@ class ClassifyView(APIView):
             )
 
         try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            client = Groq(api_key=api_key)
             prompt = CLASSIFY_PROMPT.format(description=description)
-            result = model.generate_content(prompt)
-            raw = result.text.strip()
 
-            if raw.startswith("```"):
-                raw = raw.split("```")[1]
-                if raw.startswith("json"):
-                    raw = raw[4:]
-                raw = raw.strip()
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=100,
+            )
+
+            raw = completion.choices[0].message.content.strip()
+
+            start = raw.find("{")
+            end = raw.rfind("}") + 1
+            if start != -1 and end > start:
+                raw = raw[start:end]
 
             data = json.loads(raw)
             suggested_category = data.get("category", "").lower()
@@ -72,7 +77,8 @@ class ClassifyView(APIView):
                 "suggested_priority": suggested_priority,
             })
 
-        except Exception:
+        except Exception as e:
+            print("Groq Error:", str(e))
             return Response(
                 {"suggested_category": None, "suggested_priority": None},
                 status=status.HTTP_200_OK,
