@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# Environment variables — NEVER commit this
+.env
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
