@@ -6,7 +6,6 @@ A full-stack support ticket system with AI-powered ticket classification. Users 
 
 Smart Support AI helps reduce manual effort in support ticket triage. The system analyzes ticket descriptions using an LLM and suggests an appropriate **category** and **priority**, allowing faster issue handling while keeping the user in control.
 
----
 
 ## Features
 
@@ -18,7 +17,6 @@ Smart Support AI helps reduce manual effort in support ticket triage. The system
 - Aggregated statistics dashboard
 - Fully Dockerized full-stack setup
 
----
 
 ## Tech Stack
 
