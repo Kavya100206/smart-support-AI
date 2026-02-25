@@ -2,6 +2,24 @@
 
 A full-stack support ticket system with AI-powered ticket classification. Users submit support tickets and an LLM automatically suggests a category and priority based on the description. Users can review and override the suggestions before submitting.
 
+## Overview
+
+Smart Support AI helps reduce manual effort in support ticket triage. The system analyzes ticket descriptions using an LLM and suggests an appropriate **category** and **priority**, allowing faster issue handling while keeping the user in control.
+
+---
+
+## Features
+
+- Create and manage support tickets
+- AI-powered category and priority suggestions
+- User override for AI recommendations
+- Filter tickets by category, priority, and status
+- Search tickets by keywords
+- Aggregated statistics dashboard
+- Fully Dockerized full-stack setup
+
+---
+
 ## Tech Stack
 
 - **Backend**: Django 4.2, Django REST Framework, PostgreSQL
