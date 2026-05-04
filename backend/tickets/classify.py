@@ -1,6 +1,8 @@
 import os
 import json
 from groq import Groq
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,9 +30,32 @@ Return ONLY valid JSON, no explanation, no markdown.
 
 Ticket description: {description}"""
 
+# ── Rate limit helper (shared with views.py pattern) ──────────────────────────
+
+_RATE_429 = Response(
+    {"error": "Rate limit exceeded", "retry_after": 60},
+    status=status.HTTP_429_TOO_MANY_REQUESTS,
+)
+
+
+def _is_limited(request) -> bool:
+    return bool(
+        getattr(request, "limited", False)
+        or getattr(getattr(request, "_request", None), "limited", False)
+    )
+
 
 class ClassifyView(APIView):
+    """POST /api/tickets/classify/
+
+    Phase 3: rate-limited to 20 requests / minute per IP.
+    """
+
+    @method_decorator(ratelimit(key="ip", rate="20/m", method="POST", block=False))
     def post(self, request):
+        if _is_limited(request):
+            return _RATE_429
+
         description = request.data.get("description", "").strip()
         if not description:
             return Response(
@@ -72,10 +97,12 @@ class ClassifyView(APIView):
             if suggested_priority not in VALID_PRIORITIES:
                 suggested_priority = None
 
-            return Response({
-                "suggested_category": suggested_category,
-                "suggested_priority": suggested_priority,
-            })
+            return Response(
+                {
+                    "suggested_category": suggested_category,
+                    "suggested_priority": suggested_priority,
+                }
+            )
 
         except Exception as e:
             print("Groq Error:", str(e))

@@ -10,6 +10,9 @@ ENV PYTHONUNBUFFERED=1
 
 # Install dependencies
 COPY requirements.txt .
+# If pip fails with DNS errors on Windows Docker Desktop, uncomment the line
+# below and comment out the one above it (uses a reliable mirror):
+# RUN pip install --no-cache-dir -i https://pypi.org/simple -r requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files

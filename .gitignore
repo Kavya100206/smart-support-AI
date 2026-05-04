@@ -7,6 +7,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.sqlite3
 
 # Django
 *.log
@@ -23,7 +24,6 @@ frontend/dist/
 frontend/.env.local
 
 # Docker
-.dockerignore
 
 # IDE
 .vscode/
@@ -34,3 +34,4 @@ frontend/.env.local
 # OS
 .DS_Store
 Thumbs.db
+build_log.txt

@@ -101,3 +101,37 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
 }
+
+# ─── Phase 3: Redis ───────────────────────────────────────────────────────────
+# REDIS_URL is injected by docker-compose as redis://redis:6379/0.
+# Falls back to localhost for local development without Docker.
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # Fail fast if Redis is unreachable rather than hanging requests.
+            "SOCKET_CONNECT_TIMEOUT": 2,
+            "SOCKET_TIMEOUT": 2,
+        },
+    }
+}
+
+# django-ratelimit uses the Django cache backend named here for its counters.
+# This shares the same Redis instance as the order cache — TTL is always set
+# by django-ratelimit internally.
+RATELIMIT_USE_CACHE = "default"
+
+# ─── Shopify ───────────────────────────────────────────────────────────────────
+# All credentials come from the environment. Never hardcode.
+# SHOPIFY_SHOP_DOMAIN: e.g. "my-dev-store.myshopify.com"
+# SHOPIFY_API_VERSION: pinned to a stable release (override per env if needed)
+# SHOPIFY_ACCESS_TOKEN: Admin API access token from the custom/dev app
+# SHOPIFY_WEBHOOK_SECRET: shared secret used to HMAC-verify incoming webhooks
+SHOPIFY_SHOP_DOMAIN = os.environ.get("SHOPIFY_SHOP_DOMAIN", "")
+SHOPIFY_API_VERSION = os.environ.get("SHOPIFY_API_VERSION", "2024-10")
+SHOPIFY_ACCESS_TOKEN = os.environ.get("SHOPIFY_ACCESS_TOKEN", "")
+SHOPIFY_WEBHOOK_SECRET = os.environ.get("SHOPIFY_WEBHOOK_SECRET", "")
