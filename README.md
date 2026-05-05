@@ -28,6 +28,8 @@ A full-stack support ticket system with AI-powered classification and an autonom
 - Agent metrics endpoint — resolution rate, escalation rate, avg latency
 
 ## Architecture
+
+```text
 POST /api/tickets/<id>/resolve/
 │
 ▼
@@ -51,8 +53,9 @@ build_graph() ── fresh LangGraph graph per request
 │        └── escalate_to_human(reason) → END
 │
 └─▶ AgentDecisionTrace saved to PostgreSQL
-└── tools_called, final_action, confidence_score,
-iterations, resolution_text, escalation_reason
+    └── tools_called, final_action, confidence_score,
+        iterations, resolution_text, escalation_reason
+```
 
 Agent state is instantiated per request and discarded after. FAQ embeddings are loaded once at startup into a module-level variable and reused across all requests.
 
