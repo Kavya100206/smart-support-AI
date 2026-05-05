@@ -3,7 +3,7 @@
 A full-stack support ticket system with AI-powered classification and an autonomous LangGraph resolution agent. Tickets are classified by an LLM on submit; open tickets are resolved end-to-end by an agent that searches an FAQ knowledge base and either resolves or escalates with a structured decision trace. The system is built around a Shopify integration layer (httpx-based, no SDK) that is fully implemented and test-verified — live credentials are optional for local development.
 
 ## Live Demo
-[LIve Link](https://smart-support-ai-2.onrender.com/)
+[Link](https://smart-support-ai-2.onrender.com/)
 
 ## Tech Stack
 
